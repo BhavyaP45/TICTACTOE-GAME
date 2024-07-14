@@ -10,8 +10,9 @@ line_width = 6
 clicked = False
 player = 1
 position = []
-markers = [[0]*3]*3
+markers = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 print(markers)
+
 
 #***Define Functions***
 #A function that generates a grid based on the start and end coordinates, number of squares
@@ -30,12 +31,13 @@ def create_grid(screen, x_squares, y_squares, colour = (0, 0, 0), x = (50, 350),
     pg.draw.line(screen, colour, (x[0], y_coord), (x[1], y_coord), line_width)
     y_list.append(y_coord)
 
-  return x_list, y_list
+  return x_list, y_list, x_width, y_width
 
 
 def draw_markers():
+  global markers, x_list, y_list
   x_pos = 0
-
+  
   for x in markers:
       y_pos = 0
       for y in x:
@@ -48,36 +50,53 @@ def draw_markers():
       x_pos += 1
 
 def main_screen():
-  global x_list, y_list, clicked, position, markers, player
+  global x_list, y_list, clicked, position, markers, player, running
   opening_image = pg.image.load(os.path.join("Images", "mario.png"))
   bg = (150, 255, 255)
   screen.fill(bg)
  
   x = (50, 350)
   y = (100, 400)
-  x_list, y_list = create_grid(screen, 3, 3, x = x, y = y)
-  
+  x_list, y_list, x_width, y_width = create_grid(screen, 3, 3, x = x, y = y)
+
+  draw_markers()
+
   for event in pg.event.get():
       if event.type == pg.QUIT:
-        running = False
-  
+          running = False
       if event.type == pg.MOUSEBUTTONDOWN and clicked == False:
             clicked = True
       if event.type == pg.MOUSEBUTTONUP and clicked == True:
         clicked = False
         position = pg.mouse.get_pos()
+        print(position)
         cell_x = position[0]
         cell_y = position[1]
-      
-        if markers[cell_x // 200][cell_y // 200] == 0:
-            markers[cell_x // 200][cell_y // 200] = player
+        
+        col, row = get_row_column(cell_x, cell_y)
+        if col == None or row == None:
+          continue
+        if markers[col][row] == 0:
+            markers[col][row] = player
+            print(markers)
             player *= -1
 
   pg.display.update()
   time.sleep(1)
 
+def get_row_column(x, y):
+  global x_list, y_list
+  col, row = None, None
 
+  for i in range(0, len(x_list) - 1):
+    if x_list[i] <= x <= x_list[i + 1]:
+      col = i
 
+  for i in range(0, len(y_list) - 1):
+    if y_list[i] <= y <= y_list[i + 1]:
+      row = i
+
+  return col, row
 
 #Initialize Pygame window
 pg.init()
@@ -93,7 +112,7 @@ y_list = []
 running = True
 while running:
     main_screen()
-    draw_markers()
+
 
 
 
