@@ -2,7 +2,11 @@ import pygame as pg
 import time 
 import os
 
+pg.font.init()
+
+
 #***Define Functions***
+
 #A function that generates a grid based on the start and end coordinates, number of squares
 def create_grid(screen, x_squares, y_squares, colour = (0, 0, 0), x = (50, 350), y = (100, 400)):
   x_width = (x[1] - x[0])/ x_squares
@@ -16,6 +20,10 @@ def create_grid(screen, x_squares, y_squares, colour = (0, 0, 0), x = (50, 350),
     y_coord = y[0] + i * y_width
     pg.draw.line(screen, colour, (x[0], y_coord), (x[1], y_coord))
 
+
+def start_game():
+
+  main_screen()
 
 def main_screen():
   opening_image = pg.image.load(os.path.join("Images", "mario.png"))
@@ -34,10 +42,11 @@ pg.display.set_caption("Tic-Tac-Toe Game Window")
 
 running = True
 while running:
-    main_screen()
+    start_game()
     event = pg.event.poll()
     if event.type == pg.QUIT:
-        running=0
+        pg.quit()
+        quit()
     screen.fill((0, 0, 255))
     pg.display.flip()
 
