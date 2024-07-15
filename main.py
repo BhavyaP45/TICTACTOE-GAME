@@ -34,7 +34,7 @@ def create_grid(screen, x_squares, y_squares, colour = (0, 0, 0), x = (50, 350),
   return x_list, y_list, x_width, y_width
 
 
-def draw_markers():
+def draw_markers(box_side_length):
   global markers, x_list, y_list
   x_pos = 0
   
@@ -42,10 +42,11 @@ def draw_markers():
       y_pos = 0
       for y in x:
           if y == 1:
-              pg.draw.line(screen, green, (x_pos * 200 + 30, y_pos * 200 + 30), (x_pos * 200 + 170, y_pos * 200 + 170), line_width)
-              pg.draw.line(screen, green, (x_pos * 200 + 30, y_pos * 200 + 170), (x_pos * 200 + 170, y_pos * 200 + 30), line_width)
+              pg.draw.line(screen, green, (x_pos * box_side_length + 50, y_pos * box_side_length + 100), (x_pos * box_side_length + box_side_length + 50, y_pos * box_side_length + box_side_length + 100), line_width)
+              pg.draw.line(screen, green, (x_pos * box_side_length + 50, y_pos * box_side_length + box_side_length + 100), (x_pos * box_side_length + box_side_length + 50, y_pos * box_side_length + 100), line_width)
           if y == -1:
-              pg.draw.circle(screen, red, (x_pos * 200 + 100, y_pos * 200 + 100), 80, line_width)
+              pg.draw.circle(screen, red, (x_pos * box_side_length + box_side_length//2 + 50, y_pos * box_side_length + box_side_length//2 + 100), box_side_length//2, line_width)
+             
           y_pos += 1
       x_pos += 1
 
@@ -59,7 +60,7 @@ def main_screen():
   y = (100, 400)
   x_list, y_list, x_width, y_width = create_grid(screen, 3, 3, x = x, y = y)
 
-  draw_markers()
+  draw_markers(x_width)
 
   for event in pg.event.get():
       if event.type == pg.QUIT:
