@@ -105,6 +105,33 @@ def draw_markers(box_side_length):
           y_pos += 1
       x_pos += 1
 
+# Possible colours to choose from 
+colour_list = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink']
+redav = pg.image.load('Images/RedAvatar.png')
+orangeav = pg.image.load('Images/OrangeAvatar.png')
+yellowav = pg.image.load('Images/YellowAvatar.png')
+greenav = pg.image.load('Images/GreenAvatar.png')
+blueav = pg.image.load('Images/BlueAvatar.png')
+purpleav = pg.image.load('Images/PurpleAvatar.png')
+pinkav = pg.image.load('Images/PinkAvatar.png')
+avatar_list = [redav, orangeav, yellowav, greenav, blueav, purpleav, pinkav]
+
+player1_colour = (255, 0, 0)   # Example: Red color
+player2_colour = (0, 255, 0)   # Example: Green color
+avatar1 = avatar_list[0]       # Initial avatar for player 1 (red)
+avatar2 = avatar_list[1]
+
+# Set colours and avatars based on menu input
+def set_colour1(value, colour):
+    global player1_colour, avatar1
+    player1_colour = colour_list[colour-1]
+    avatar1 = avatar_list[colour-1]
+
+def set_colour2(value, colour):
+    global player2_colour, avatar2
+    player2_colour = colour_list[colour-1]
+    avatar2 = avatar_list[colour-1]
+
 #A function that loops through the main screen in the program 
 def main_screen():
   #Access all the global variables
@@ -123,6 +150,9 @@ def main_screen():
     y = (100, 400)
 
     x_list, y_list, x_width, y_width = create_grid(screen, 3, 3, x = x, y = y)
+
+    screen.blit(avatar1, (10, 10))
+    screen.blit(avatar2, (300, 10))
 
     #Draw the markers based on the list 
     draw_markers(x_width)
@@ -302,18 +332,6 @@ clock = pg.time.Clock()
 
 # Initializing the theme of the menu
 space_theme = pygame_menu.themes.THEME_DARK.copy()
-
-# Possible colours to choose from 
-colour_list = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink']
-
-# Set colours based on menu input
-def set_colour1(value, colour):
-  global player1_colour
-  player1_colour = colour_list[colour-1]
-
-def set_colour2(value, colour):
-  global player2_colour
-  player2_colour = colour_list[colour-1]
 
 # Set usernames based on menu input
 def set_name1(name):
