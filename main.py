@@ -5,6 +5,8 @@ from pygame.locals import *
 import pygame_menu
 import time 
 import os
+import json
+from datetime import datetime, timezone
 
 #Initialize Pygame window
 pg.init()
@@ -12,6 +14,58 @@ pg.init()
 # Screen dimensions
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 500
+
+# counter 
+trigger_counter = 0
+
+# set up usernames
+player1_username = ''
+player2_username = ''
+winner_username = ''
+loser_username = ''
+
+# utility function to read json files
+def read_json_file(file_path):
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+    return data
+
+# utility function to add on entries json files
+def append_entry(file_path, new_entry):
+    # Read the existing data
+    data = read_json_file(file_path)
+    # Append the new entry
+    data.append(new_entry)
+    # Write the updated data back to the JSON file
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
+
+def get_winner_username():
+    global player1_username, player2_username, winner, winner_username
+    if winner == 1:
+        winner_username = player1_username
+    elif winner == 2:
+        winner_username = player2_username
+    else:
+        winner_username = 'Tie Game'
+
+    return winner_username
+
+def update_gamelog():
+    global player1_username, player2_username, winner, winner_username, loser_username
+    # New entry to append
+    new_entry = {
+        "timestamp": datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        "winner": winner_username 
+    }
+
+    # Path to the JSON file
+    file_path = 'gamelog.json'
+
+    # Append the new entry
+    append_entry(file_path, new_entry)
+
+
 
 # Define colours and line thickness
 green =(0, 255, 0)
@@ -204,6 +258,12 @@ def main_screen():
     if game_over == True:
           display_winner(winner)
           
+          # update_gamelog()
+          global trigger_counter
+          if trigger_counter == 0:
+            update_gamelog()
+            trigger_counter += 1
+          
           # check to see if user plays again
           if event.type == pg.MOUSEBUTTONDOWN and clicked == False:
               clicked = True
@@ -225,6 +285,15 @@ def main_screen():
 #Get the row and column in the grid based on user coordinates
 #Inputs: x and y coordinates
 #Outputs: Row and column numbers (0 indexing)
+def gameReset():
+  global x_list, y_list, clicked, position, markers, player, running, click_counter, game_over, winner, event, again_rect
+  position = []
+  player = 1
+  winner = 0
+  game_over = False
+  click_counter = 0
+  markers = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
 def get_row_column(x, y):
   global x_list, y_list
   #Initialize row and column as none
@@ -286,24 +355,63 @@ def check_winner():
         
 # Displays the outcome of the game, and a button to play again
 def display_winner(winner):
-    
-    # Display which player won, otherwise display "tie game"
-    if winner > 0:
-        win_text = "Player " + str(winner) + " wins!"
-        win_img = font.render(win_text, True, blue)
-        pg.draw.rect(screen, green, (SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 110, 200, 50))
-        screen.blit(win_img, (SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 100))
-    else:
-        win_text = "Tie Game!"
-        win_img = font.render(win_text, True, blue)
-        pg.draw.rect(screen, green, (SCREEN_WIDTH // 2 - 70, SCREEN_HEIGHT // 2 - 110, 140, 50))
-        screen.blit(win_img, (SCREEN_WIDTH // 2 - 70, SCREEN_HEIGHT // 2 - 100))
+  global end_menu
+  # Display which player won, otherwise display "tie game"
+  if winner > 0:
+      win_text = "Player " + str(winner) + " wins!"
+      win_img = font.render(win_text, True, blue)
+      pg.draw.rect(screen, green, (SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 110, 200, 50))
+      screen.blit(win_img, (SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 100))
+  else:
+      win_text = "Tie Game!"
+      win_img = font.render(win_text, True, blue)
+      pg.draw.rect(screen, green, (SCREEN_WIDTH // 2 - 70, SCREEN_HEIGHT // 2 - 110, 140, 50))
+      screen.blit(win_img, (SCREEN_WIDTH // 2 - 70, SCREEN_HEIGHT // 2 - 100))
+  
+  if winner > 0:
+      winner_username = get_winner_username()
 
-    # Play again button
-    again = "Play Again?"
-    again_img = font.render(again, True, blue)
-    pg.draw.rect(screen, green, again_rect)
-    screen.blit(again_img, (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 + 10))
+      if winner == 1:
+      
+          winner_username = player1_username
+      else:
+          
+          winner_username = player2_username
+      print("winner is - " + winner_username )
+        
+      win_text = "" + str(winner_username) + " wins!"
+      
+      # update_leaderboard()
+      win_img = font.render(win_text, True, blue)
+      
+      # pygame_menu.events.RESET
+
+      # menu._open(end_menu)
+      gameReset()
+      end_menu = pygame_menu.Menu('GAME OVER', 400, 500,
+                    theme=space_theme)
+      end_menu.add.label(f'{str(winner_username)} wins!', font_size=24)
+      end_menu.add.button('Change Avatars', avatar_endmenu)
+      end_menu.add.button('Play Again!', main_screen)
+      end_menu.add.button('Quit', pygame_menu.events.EXIT)
+      end_menu.mainloop(screen)
+
+
+      pg.draw.rect(screen, green, (SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 110, 200, 50))
+      screen.blit(win_img, (SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 100))
+      
+      
+  else:
+      win_text = "Tie Game!"
+      win_img = font.render(win_text, True, blue)
+      pg.draw.rect(screen, green, (SCREEN_WIDTH // 2 - 70, SCREEN_HEIGHT // 2 - 110, 140, 50))
+      screen.blit(win_img, (SCREEN_WIDTH // 2 - 70, SCREEN_HEIGHT // 2 - 100))
+
+  # Play again button
+  again = "Play Again?"
+  again_img = font.render(again, True, blue)
+  pg.draw.rect(screen, green, again_rect)
+  screen.blit(again_img, (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 + 10))
     
 
 # Displays # of wins for each player
@@ -321,10 +429,19 @@ def score_counter():
 
 
 
+  again = "Play Again?"
+  again_img = font.render(again, True, blue)
+  pg.draw.rect(screen, green, again_rect)
+  screen.blit(again_img, (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 + 10))
+
+
+
+pg.font.init()
+font = pg.font.Font(None, 24)
 
 screen = pg.display.set_mode((400,500))
 manager = pygame_gui.UIManager((400,500))
-pg.display.set_caption("Space Tac Toe Game")
+pg.display.set_caption("Space Tac Toe")
 x_list = []
 y_list = []
     
@@ -335,9 +452,11 @@ space_theme = pygame_menu.themes.THEME_DARK.copy()
 
 # Set usernames based on menu input
 def set_name1(name):
+  global player1_username
   player1_username = name
 
 def set_name2(name):
+  global player2_username
   player2_username = name
 
 # Opening the "Avatar Selection" tab from the menu
@@ -345,6 +464,12 @@ def avatar_menu():
   menu._open(avatars)
 
 # Creating the main menu
+def avatar_endmenu():
+  global end_menu
+  end_menu._open(avatars)
+
+
+
 menu = pygame_menu.Menu('Space Tac Toe', 400, 500,
                        theme=space_theme)
 
@@ -356,10 +481,15 @@ menu.add.button('Quit', pygame_menu.events.EXIT)
 # Creating the "Avatar Selection" menu and its inputs
 avatars = pygame_menu.Menu('Select an Avatar', 400, 500,
                        theme=pygame_menu.themes.THEME_BLUE)
-avatars.add.text_input('Player 1: ', default='John Doe', onchange=set_name1)
+avatars.add.text_input('Player 1: ', default='Name', onchange=set_name1)
 avatars.add.selector('Colour: ', [('Red', 1), ('Orange', 2), ('Yellow', 3), ('Green', 4), ('Blue', 5), ('Purple', 6), ('Pink', 7)], onchange=set_colour1)
 avatars.add.text_input('Player 2: ', default='Jane Smith')
+
+avatars.add.text_input('Player 2: ', default='Name')
 avatars.add.selector('Colour: ', [('Red', 1), ('Orange', 2), ('Yellow', 3), ('Green', 4), ('Blue', 5), ('Purple', 6), ('Pink', 7)], onchange=set_colour2)
+
+
+
 
 running = True
 while running:

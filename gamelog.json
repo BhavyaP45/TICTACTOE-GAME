@@ -1,0 +1,74 @@
+[
+    {
+        "timestamp": "2024-07-01T14:30:00Z",
+        "winner": "Sajan",
+        "loser": "Anirudh"
+    },
+    {
+        "timestamp": "2024-07-02T16:00:00Z",
+        "winner": "Bhavya",
+        "loser": "Sajan"
+    },
+    {
+        "timestamp": "2024-07-03T18:45:00Z",
+        "winner": "Nupoor",
+        "loser": "Anirudh"
+    },
+    {
+        "timestamp": "2024-07-15T16:20:15Z",
+        "winner": "",
+        "loser": "Anirudh"
+    },
+    {
+        "timestamp": "2024-07-15T16:25:40Z",
+        "winner": "",
+        "loser": "anirudh"
+    },
+    {
+        "timestamp": "2024-07-15T16:27:46Z",
+        "winner": "Anirudh",
+        "loser": ""
+    },
+    {
+        "timestamp": "2024-07-15T16:31:05Z",
+        "winner": "Sajan",
+        "loser": ""
+    },
+    {
+        "timestamp": "2024-07-15T16:32:45Z",
+        "winner": "Zane",
+        "loser": ""
+    },
+    {
+        "timestamp": "2024-07-15T20:50:38Z",
+        "winner": "Anirudh"
+    },
+    {
+        "timestamp": "2024-07-15T20:51:44Z",
+        "winner": "Ani"
+    },
+    {
+        "timestamp": "2024-07-15T20:52:56Z",
+        "winner": ""
+    },
+    {
+        "timestamp": "2024-07-15T20:55:11Z",
+        "winner": ""
+    },
+    {
+        "timestamp": "2024-07-15T20:55:31Z",
+        "winner": ""
+    },
+    {
+        "timestamp": "2024-07-15T20:56:51Z",
+        "winner": ""
+    },
+    {
+        "timestamp": "2024-07-15T20:59:09Z",
+        "winner": ""
+    },
+    {
+        "timestamp": "2024-07-15T20:59:45Z",
+        "winner": ""
+    }
+]
