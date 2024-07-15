@@ -1,6 +1,6 @@
 import pygame as pg
 from pygame.locals import *
-import pygame_gui
+import pygame_menu
 import time 
 import os
 
