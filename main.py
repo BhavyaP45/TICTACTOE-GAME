@@ -21,7 +21,7 @@ orange =(252, 152, 3)
 yellow = (252, 227, 3)
 purple = (152, 3, 252)
 pink = (252, 3, 240)
-player1_colour = green
+player1_colour = red
 player2_colour = red
 line_width = 6
 
@@ -61,17 +61,22 @@ def create_grid(screen, x_squares, y_squares, colour = (0, 0, 0), x = (50, 350),
   return x_list, y_list, x_width, y_width
 
 def draw_markers(box_side_length):
-  global markers, x_list, y_list
+  global markers, x_list, y_list, line_width
   x_pos = 0
-  
+  scale = 2 * line_width
   for x in markers:
       y_pos = 0
       for y in x:
           if y == 1:
-              pg.draw.line(screen, player1_colour, (x_pos * box_side_length + 50, y_pos * box_side_length + 100), (x_pos * box_side_length + box_side_length + 50, y_pos * box_side_length + box_side_length + 100), line_width)
-              pg.draw.line(screen, player1_colour, (x_pos * box_side_length + 50, y_pos * box_side_length + box_side_length + 100), (x_pos * box_side_length + box_side_length + 50, y_pos * box_side_length + 100), line_width)
+              
+              start_coord1 = (x_pos * box_side_length + 50 + scale, y_pos * box_side_length + 100 + scale)
+              end_coord1 = (x_pos * box_side_length + box_side_length + 50 - scale , y_pos * box_side_length + box_side_length + 100 - scale)
+              start_coord2 = (x_pos * box_side_length + 50 + scale, y_pos * box_side_length + box_side_length + 100 - scale)
+              end_coord2 = (x_pos * box_side_length + box_side_length + 50 - scale , y_pos * box_side_length + 100 + scale)
+              pg.draw.line(screen, player1_colour, start_coord1, end_coord1, line_width)
+              pg.draw.line(screen, player1_colour, start_coord2, end_coord2, line_width)
           if y == -1:
-              pg.draw.circle(screen, player2_colour, (x_pos * box_side_length + box_side_length//2 + 50, y_pos * box_side_length + box_side_length//2 + 100), box_side_length//2, line_width)
+              pg.draw.circle(screen, player2_colour, (x_pos * box_side_length + box_side_length//2 + 50, y_pos * box_side_length + box_side_length//2 + 100), box_side_length//2 - scale, line_width)
              
           y_pos += 1
       x_pos += 1
