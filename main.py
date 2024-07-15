@@ -21,11 +21,13 @@ orange =(252, 152, 3)
 yellow = (252, 227, 3)
 purple = (152, 3, 252)
 pink = (252, 3, 240)
+
+#Default colours for the players
 player1_colour = red
-player2_colour = red
+player2_colour = green
 line_width = 6
 
-# Define variables
+# Define global variables
 clicked = False
 player = 1
 position = []
@@ -43,14 +45,20 @@ font = pg.font.SysFont(None, 40)
 #***Define Functions***
 
 #A function that generates a grid based on the start and end coordinates, number of squares
+# Inputs: Screen, number of squares in the x and y directions, colour, start and end coordinates in the x and y directions
+# Outputs: list of x_coordinates, list of y_coordinates, width and height of boxes
 def create_grid(screen, x_squares, y_squares, colour = (0, 0, 0), x = (50, 350), y = (100, 400)):
+  #Calculate width of each box
   x_width = (x[1] - x[0])/ x_squares
+  #Initialize x list
   x_list = []
+  #Add the coordinates for the vertical lines to the x list, and draw the line on the screen
   for i in range(x_squares + 1):
     x_coord = x[0] + i * x_width
     x_list.append(x_coord)
     pg.draw.line(screen, colour, (x_coord, y[0]), (x_coord, y[1]), line_width)
 
+  #Do the same process for the y-values
   y_width = (y[1] -y[0])/ y_squares
   y_list = []
   for i in range(y_squares + 1):
@@ -60,62 +68,94 @@ def create_grid(screen, x_squares, y_squares, colour = (0, 0, 0), x = (50, 350),
 
   return x_list, y_list, x_width, y_width
 
+#A function that reads the markers list and draws corresponding markers (X or O)
+#Inputs: Side lengths of each box
 def draw_markers(box_side_length):
   global markers, x_list, y_list, line_width
+
+  #Create a counter that will be used to translate the markers accordingly
   x_pos = 0
+  #A scale value that will leave some margin between the box and the marker
   scale = 2 * line_width
+
+  #Loop through the various rows and columns in the 2d Array
   for x in markers:
       y_pos = 0
       for y in x:
+          #1 is used in the marker list to indicate an X
           if y == 1:
-              
+              #Create start and end coordinates for both diagonal lines in an x
               start_coord1 = (x_pos * box_side_length + 50 + scale, y_pos * box_side_length + 100 + scale)
               end_coord1 = (x_pos * box_side_length + box_side_length + 50 - scale , y_pos * box_side_length + box_side_length + 100 - scale)
               start_coord2 = (x_pos * box_side_length + 50 + scale, y_pos * box_side_length + box_side_length + 100 - scale)
               end_coord2 = (x_pos * box_side_length + box_side_length + 50 - scale , y_pos * box_side_length + 100 + scale)
+              #Draw the lines on the screen
               pg.draw.line(screen, player1_colour, start_coord1, end_coord1, line_width)
               pg.draw.line(screen, player1_colour, start_coord2, end_coord2, line_width)
+          #-1 is used in the marker list to indicate an O
           if y == -1:
+              #Draw circle on board
               pg.draw.circle(screen, player2_colour, (x_pos * box_side_length + box_side_length//2 + 50, y_pos * box_side_length + box_side_length//2 + 100), box_side_length//2 - scale, line_width)
-             
+      #Increment both counters  
           y_pos += 1
       x_pos += 1
 
+#A function that loops through the main screen in the program 
 def main_screen():
+  #Access all the global variables
   global x_list, y_list, clicked, position, markers, player, running, click_counter, game_over, winner, event, again_rect
+
+  #Initialize boolean that will continue running until the program is quit
   running = True
   while running:
+    #Background for the screen
     bg = (150, 255, 255)
     screen.fill(bg)
-  
+
+    #Initialize start and end coordinates for the grid
     x = (50, 350)
     y = (100, 400)
+
     x_list, y_list, x_width, y_width = create_grid(screen, 3, 3, x = x, y = y)
 
+    #Draw the markers based on the list 
     draw_markers(x_width)
 
+    #Iterate through all the events in Pygame
     for event in pg.event.get():
+      #Quit loop if x is clicked
       if event.type == pg.QUIT:
           running = False
+          continue
+      
+      #Check if the game is still continuing
       if game_over == False:
+        #Check if user clicked mousebutton down and up
         if event.type == pg.MOUSEBUTTONDOWN and clicked == False:
               clicked = True
         if event.type == pg.MOUSEBUTTONUP and clicked == True:
           clicked = False
+          #Get the mouse position and store it in two variables
           position = pg.mouse.get_pos()
           cell_x = position[0]
           cell_y = position[1]
           
+          #Call get_row_column function
           col, row = get_row_column(cell_x, cell_y)
+
+          #If the pointer was clicked outside of the grid, continue to next iteration
           if col == None or row == None:
             continue
-
+          
+          #0 indicates an unmarked square. If the user clicks on one, add their respective marker
           if markers[col][row] == 0:
               markers[col][row] = player
               player *= -1
               click_counter += 1
+              #Call function check_winner
               check_winner()
-
+    
+    #If the game is finished, display the winner
     if game_over == True:
           display_winner(winner)
           # check to see if user plays again
@@ -124,7 +164,6 @@ def main_screen():
           if event.type == pg.MOUSEBUTTONUP and clicked == True:
               clicked = False
               position = pg.mouse.get_pos()
-              print(position)
               if again_rect.collidepoint(position):
                   # rest variables
                   position = []
@@ -134,22 +173,28 @@ def main_screen():
                   click_counter = 0
                   markers = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
+    #Update the display
     pg.display.update()
 
+#Get the row and column in the grid based on user coordinates
+#Inputs: x and y coordinates
+#Outputs: Row and column numbers (0 indexing)
 def get_row_column(x, y):
   global x_list, y_list
+  #Initialize row and column as none
   col, row = None, None
 
+  #Iterate through the x_list, setting lower and upper bounds for the coordinates
   for i in range(0, len(x_list) - 1):
     if x_list[i] <= x <= x_list[i + 1]:
       col = i
 
+  #Iterate through the y_list, setting lower and upper bounds for the coordinates
   for i in range(0, len(y_list) - 1):
     if y_list[i] <= y <= y_list[i + 1]:
       row = i
 
   return col, row
-
 
 def check_winner():
     global winner, game_over, click_counter
