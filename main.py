@@ -70,57 +70,58 @@ def draw_markers(box_side_length):
 
 def main_screen():
   global x_list, y_list, clicked, position, markers, player, running, click_counter, game_over, winner, event, again_rect
-  opening_image = pg.image.load(os.path.join("Images", "mario.png"))
-  bg = (150, 255, 255)
-  screen.fill(bg)
- 
-  x = (50, 350)
-  y = (100, 400)
-  x_list, y_list, x_width, y_width = create_grid(screen, 3, 3, x = x, y = y)
+  running = True
+  while running:
+    bg = (150, 255, 255)
+    screen.fill(bg)
+  
+    x = (50, 350)
+    y = (100, 400)
+    x_list, y_list, x_width, y_width = create_grid(screen, 3, 3, x = x, y = y)
 
-  draw_markers(x_width)
+    draw_markers(x_width)
 
-  for event in pg.event.get():
-    if event.type == pg.QUIT:
-        running = False
-    if game_over == False:
-      if event.type == pg.MOUSEBUTTONDOWN and clicked == False:
-            clicked = True
-      if event.type == pg.MOUSEBUTTONUP and clicked == True:
-        clicked = False
-        position = pg.mouse.get_pos()
-        cell_x = position[0]
-        cell_y = position[1]
-        
-        col, row = get_row_column(cell_x, cell_y)
-        if col == None or row == None:
-          continue
-
-        if markers[col][row] == 0:
-            markers[col][row] = player
-            player *= -1
-            click_counter += 1
-            check_winner()
-
-  if game_over == True:
-        display_winner(winner)
-        # check to see if user plays again
+    for event in pg.event.get():
+      if event.type == pg.QUIT:
+          running = False
+      if game_over == False:
         if event.type == pg.MOUSEBUTTONDOWN and clicked == False:
-            clicked = True
+              clicked = True
         if event.type == pg.MOUSEBUTTONUP and clicked == True:
-            clicked = False
-            position = pg.mouse.get_pos()
-            print(position)
-            if again_rect.collidepoint(position):
-                # rest variables
-                position = []
-                player = 1
-                winner = 0
-                game_over = False
-                click_counter = 0
-                markers = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+          clicked = False
+          position = pg.mouse.get_pos()
+          cell_x = position[0]
+          cell_y = position[1]
+          
+          col, row = get_row_column(cell_x, cell_y)
+          if col == None or row == None:
+            continue
 
-  pg.display.update()
+          if markers[col][row] == 0:
+              markers[col][row] = player
+              player *= -1
+              click_counter += 1
+              check_winner()
+
+    if game_over == True:
+          display_winner(winner)
+          # check to see if user plays again
+          if event.type == pg.MOUSEBUTTONDOWN and clicked == False:
+              clicked = True
+          if event.type == pg.MOUSEBUTTONUP and clicked == True:
+              clicked = False
+              position = pg.mouse.get_pos()
+              print(position)
+              if again_rect.collidepoint(position):
+                  # rest variables
+                  position = []
+                  player = 1
+                  winner = 0
+                  game_over = False
+                  click_counter = 0
+                  markers = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+
+    pg.display.update()
 
 def get_row_column(x, y):
   global x_list, y_list
@@ -201,11 +202,7 @@ x_list = []
 y_list = []
 
 
-
-running = True
-while running:
-    main_screen()
-
+main_screen()
     
 
 
