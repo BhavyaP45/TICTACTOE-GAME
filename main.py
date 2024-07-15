@@ -17,6 +17,12 @@ SCREEN_HEIGHT = 500
 green =(0, 255, 0)
 red = (255, 0, 0)
 blue = (0, 0, 255)
+orange =(252, 152, 3)
+yellow = (252, 227, 3)
+purple = (152, 3, 252)
+pink = (252, 3, 240)
+player1_colour = green
+player2_colour = red
 line_width = 6
 
 # Define variables
@@ -62,10 +68,10 @@ def draw_markers(box_side_length):
       y_pos = 0
       for y in x:
           if y == 1:
-              pg.draw.line(screen, green, (x_pos * box_side_length + 50, y_pos * box_side_length + 100), (x_pos * box_side_length + box_side_length + 50, y_pos * box_side_length + box_side_length + 100), line_width)
-              pg.draw.line(screen, green, (x_pos * box_side_length + 50, y_pos * box_side_length + box_side_length + 100), (x_pos * box_side_length + box_side_length + 50, y_pos * box_side_length + 100), line_width)
+              pg.draw.line(screen, player1_colour, (x_pos * box_side_length + 50, y_pos * box_side_length + 100), (x_pos * box_side_length + box_side_length + 50, y_pos * box_side_length + box_side_length + 100), line_width)
+              pg.draw.line(screen, player1_colour, (x_pos * box_side_length + 50, y_pos * box_side_length + box_side_length + 100), (x_pos * box_side_length + box_side_length + 50, y_pos * box_side_length + 100), line_width)
           if y == -1:
-              pg.draw.circle(screen, red, (x_pos * box_side_length + box_side_length//2 + 50, y_pos * box_side_length + box_side_length//2 + 100), box_side_length//2, line_width)
+              pg.draw.circle(screen, player2_colour, (x_pos * box_side_length + box_side_length//2 + 50, y_pos * box_side_length + box_side_length//2 + 100), box_side_length//2, line_width)
              
           y_pos += 1
       x_pos += 1
@@ -210,11 +216,11 @@ space_theme = pygame_menu.themes.THEME_DARK.copy()
 colour_list = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink']
 
 def set_colour1(value, colour):
-  print(colour)
+  global player1_colour
   player1_colour = colour_list[colour-1]
 
 def set_colour2(value, colour):
-  print(colour)
+  global player2_colour
   player2_colour = colour_list[colour-1]
 
 def set_name1(name):
