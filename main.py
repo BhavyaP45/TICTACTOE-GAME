@@ -70,9 +70,6 @@ def draw_markers(box_side_length):
           y_pos += 1
       x_pos += 1
 
-def start_game():
-  main_screen()
-
 def main_screen():
   global x_list, y_list, clicked, position, markers, player, running, click_counter, game_over, winner, event, again_rect
   running = True
@@ -199,15 +196,13 @@ def display_winner(winner):
     screen.blit(again_img, (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 + 10))
 
 pg.font.init()
-font = pg.font.Font(None, 4)
+font = pg.font.Font(None, 24)
 
 screen = pg.display.set_mode((400,500))
 manager = pygame_gui.UIManager((400,500))
 pg.display.set_caption("Tic-Tac-Toe Game Window")
 x_list = []
 y_list = []
-
-main_screen()
     
 clock = pg.time.Clock()
 space_theme = pygame_menu.themes.THEME_DARK.copy()
@@ -246,7 +241,6 @@ avatars.add.selector('Colour: ', [('Red', 1), ('Orange', 2), ('Yellow', 3), ('Gr
 
 avatars.add.text_input('Player 2: ', default='Jane Smith')
 avatars.add.selector('Colour: ', [('Red', 1), ('Orange', 2), ('Yellow', 3), ('Green', 4), ('Blue', 5), ('Purple', 6), ('Pink', 7)], onchange=set_colour2)
-
 
 running = True
 while running:
