@@ -33,6 +33,8 @@ markers = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 click_counter = 0
 game_over = False
 winner = 0
+score1_counter = 0
+score2_counter = 0
 
 # Create play again button
 again_rect = Rect(SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2, 160, 50)
@@ -57,11 +59,15 @@ def create_grid(screen, x_squares, y_squares, colour = (0, 0, 0), x = (50, 350),
     y_coord = y[0] + i * y_width
     pg.draw.line(screen, colour, (x[0], y_coord), (x[1], y_coord), line_width)
     y_list.append(y_coord)
-
+  
   return x_list, y_list, x_width, y_width
 
 def draw_markers(box_side_length):
   global markers, x_list, y_list, line_width
+
+  # Display Win counter for each player
+  score_counter()
+
   x_pos = 0
   scale = 2 * line_width
   for x in markers:
@@ -83,6 +89,7 @@ def draw_markers(box_side_length):
 
 def main_screen():
   global x_list, y_list, clicked, position, markers, player, running, click_counter, game_over, winner, event, again_rect
+  global score1_counter, score2_counter
   running = True
   while running:
     bg = (150, 255, 255)
@@ -115,9 +122,18 @@ def main_screen():
               player *= -1
               click_counter += 1
               check_winner()
-
+              
+              # Update win counter
+              if winner == 1:
+                score1_counter += 1
+      
+              elif winner == 2:
+                score2_counter += 1
+                
+    
     if game_over == True:
           display_winner(winner)
+          
           # check to see if user plays again
           if event.type == pg.MOUSEBUTTONDOWN and clicked == False:
               clicked = True
@@ -150,13 +166,16 @@ def get_row_column(x, y):
 
   return col, row
 
-
+# Determine the winner (player 1 or player 2, or tie game)
 def check_winner():
     global winner, game_over, click_counter
 
     y_pos = 0
+
+    # Loop through each square (coordinate) in the grid
     for x in markers:
-        # check columns
+        
+        # Check columns for 3 markers (X or O) in a row
         if sum(x) == 3:
             winner = 1
             game_over = True
@@ -165,7 +184,7 @@ def check_winner():
             winner = 2
             game_over = True
 
-        # check rows
+        # Check rows for 3 markers in a row
         if markers[0][y_pos] + markers[1][y_pos] + markers[2][y_pos] == 3:
             winner = 1
             game_over = True
@@ -176,7 +195,7 @@ def check_winner():
         
         y_pos += 1
 
-    # check cross
+    # Check diagonals for 3 markers in a row
     if markers[0][0] + markers[1][1] + markers[2][2] == 3 or markers[2][0] + markers[1][1] + markers[0][2] == 3:
         winner = 1
         game_over = True
@@ -184,12 +203,15 @@ def check_winner():
         winner = 2
         game_over = True
     
-    # check tie
+    # Check for tie game
     if click_counter == 9 and winner == 0:
         game_over = True
+      
         
-
+# Displays the outcome of the game, and a button to play again
 def display_winner(winner):
+    
+    # Display which player won, otherwise display "tie game"
     if winner > 0:
         win_text = "Player " + str(winner) + " wins!"
         win_img = font.render(win_text, True, blue)
@@ -201,10 +223,27 @@ def display_winner(winner):
         pg.draw.rect(screen, green, (SCREEN_WIDTH // 2 - 70, SCREEN_HEIGHT // 2 - 110, 140, 50))
         screen.blit(win_img, (SCREEN_WIDTH // 2 - 70, SCREEN_HEIGHT // 2 - 100))
 
+    # Play again button
     again = "Play Again?"
     again_img = font.render(again, True, blue)
     pg.draw.rect(screen, green, again_rect)
     screen.blit(again_img, (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 + 10))
+    
+
+# Displays # of wins for each player
+def score_counter():
+  
+  score1 = "Wins: " + str(score1_counter)
+  score1_img = font.render(score1, True, blue)
+  pg.draw.rect(screen, green, (40, 50, 55, 23))
+  screen.blit(score1_img, (40, 50))
+
+  score2 = "Wins: " + str(score2_counter)
+  score2_img = font.render(score2, True, blue)
+  pg.draw.rect(screen, green, (310, 50, 55, 23))
+  screen.blit(score2_img, (310, 50))
+
+
 
 pg.font.init()
 font = pg.font.Font(None, 24)
