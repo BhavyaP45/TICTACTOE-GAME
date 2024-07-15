@@ -1,5 +1,6 @@
 import pygame as pg
 from pygame.locals import *
+import pygame_gui
 import time 
 import os
 
@@ -80,8 +81,9 @@ def main_screen():
   draw_markers(x_width)
 
   for event in pg.event.get():
-      if event.type == pg.QUIT:
-          running = False
+    if event.type == pg.QUIT:
+        running = False
+    if game_over == False:
       if event.type == pg.MOUSEBUTTONDOWN and clicked == False:
             clicked = True
       if event.type == pg.MOUSEBUTTONUP and clicked == True:
@@ -102,17 +104,14 @@ def main_screen():
 
   if game_over == True:
         display_winner(winner)
-
         # check to see if user plays again
         if event.type == pg.MOUSEBUTTONDOWN and clicked == False:
             clicked = True
-            print("sad")
         if event.type == pg.MOUSEBUTTONUP and clicked == True:
             clicked = False
             position = pg.mouse.get_pos()
             print(position)
             if again_rect.collidepoint(position):
-                print("Hello World")
                 # rest variables
                 position = []
                 player = 1
