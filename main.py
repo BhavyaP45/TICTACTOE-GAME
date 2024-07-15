@@ -231,22 +231,23 @@ def set_name2(name):
 def avatar_menu():
   menu._open(avatars)
 
-menu = pygame_menu.Menu('Space Tac Toe', 400, 500,
+def buildMenu():
+  menu = pygame_menu.Menu('Space Tac Toe', 400, 500,
                        theme=space_theme)
+  menu.add.button('Avatars', avatar_menu)
+  menu.add.button('Play', main_screen)
 
-menu.add.button('Avatars', avatar_menu)
-menu.add.button('Play', main_screen)
+  menu.add.button('Quit', pygame_menu.events.EXIT)
 
-menu.add.button('Quit', pygame_menu.events.EXIT)
+  avatars = pygame_menu.Menu('Select an Avatar', 400, 500,
+                        theme=pygame_menu.themes.THEME_BLUE)
+  avatars.add.text_input('Player 1: ', default='John Doe', onchange=set_name1)
+  avatars.add.selector('Colour: ', [('Red', 1), ('Orange', 2), ('Yellow', 3), ('Green', 4), ('Blue', 5), ('Purple', 6), ('Pink', 7)], onchange=set_colour1)
 
-avatars = pygame_menu.Menu('Select an Avatar', 400, 500,
-                       theme=pygame_menu.themes.THEME_BLUE)
-avatars.add.text_input('Player 1: ', default='John Doe', onchange=set_name1)
-avatars.add.selector('Colour: ', [('Red', 1), ('Orange', 2), ('Yellow', 3), ('Green', 4), ('Blue', 5), ('Purple', 6), ('Pink', 7)], onchange=set_colour1)
+  avatars.add.text_input('Player 2: ', default='Jane Smith')
+  avatars.add.selector('Colour: ', [('Red', 1), ('Orange', 2), ('Yellow', 3), ('Green', 4), ('Blue', 5), ('Purple', 6), ('Pink', 7)], onchange=set_colour2)
 
-avatars.add.text_input('Player 2: ', default='Jane Smith')
-avatars.add.selector('Colour: ', [('Red', 1), ('Orange', 2), ('Yellow', 3), ('Green', 4), ('Blue', 5), ('Purple', 6), ('Pink', 7)], onchange=set_colour2)
-
+buildMenu()
 
 running = True
 while running:
