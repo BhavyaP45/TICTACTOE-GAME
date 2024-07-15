@@ -1,9 +1,8 @@
 import pygame as pg
+import pygame_menu
+import pygame_gui
 import time 
 import os
-
-pg.font.init()
-
 
 #***Define Functions***
 
@@ -22,33 +21,78 @@ def create_grid(screen, x_squares, y_squares, colour = (0, 0, 0), x = (50, 350),
 
 
 def start_game():
-
   main_screen()
 
 def main_screen():
-  opening_image = pg.image.load(os.path.join("Images", "mario.png"))
-  create_grid(screen, 3, 3)
+  e = True
+  while e:
+    screen.fill((0,0,255))
+    create_grid(screen, 3, 3)
 
-  pg.display.update()
-  time.sleep(1)
+    pg.display.update()
+    time.sleep(1)
 
 
-#Initialize Pygame window
 pg.init()
 
-#Set the display
+pg.font.init()
+font = pg.font.Font(None, 4)
+
 screen = pg.display.set_mode((400,500))
+manager = pygame_gui.UIManager((400,500))
 pg.display.set_caption("Tic-Tac-Toe Game Window")
+
+clock = pg.time.Clock()
+space_theme = pygame_menu.themes.THEME_DARK.copy()
+
+colour_list = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink']
+
+def set_colour1(value, colour):
+  print(colour)
+  player1_colour = colour_list[colour-1]
+
+def set_colour2(value, colour):
+  print(colour)
+  player2_colour = colour_list[colour-1]
+
+def set_name1(name):
+  player1_username = name
+
+def set_name2(name):
+  player2_username = name
+
+def avatar_menu():
+  menu._open(avatars)
+
+menu = pygame_menu.Menu('Space Tac Toe', 400, 500,
+                       theme=space_theme)
+
+menu.add.button('Avatars', avatar_menu)
+menu.add.button('Play', main_screen)
+
+menu.add.button('Quit', pygame_menu.events.EXIT)
+
+avatars = pygame_menu.Menu('Select an Avatar', 400, 500,
+                       theme=pygame_menu.themes.THEME_BLUE)
+avatars.add.text_input('Player 1: ', default='John Doe', onchange=set_name1)
+avatars.add.selector('Colour: ', [('Red', 1), ('Orange', 2), ('Yellow', 3), ('Green', 4), ('Blue', 5), ('Purple', 6), ('Pink', 7)], onchange=set_colour1)
+
+avatars.add.text_input('Player 2: ', default='Jane Smith')
+avatars.add.selector('Colour: ', [('Red', 1), ('Orange', 2), ('Yellow', 3), ('Green', 4), ('Blue', 5), ('Purple', 6), ('Pink', 7)], onchange=set_colour2)
+
 
 running = True
 while running:
-    start_game()
-    event = pg.event.poll()
-    if event.type == pg.QUIT:
-        pg.quit()
-        quit()
-    screen.fill((0, 0, 255))
-    pg.display.flip()
+    time_delta = clock.tick(60)/1000
+    events = pg.event.get()
+    for event in events:
+      if event.type == pg.QUIT:
+          pg.quit()
+          quit()
+    if menu.is_enabled():
+      menu.update(events)
+      menu.draw(screen)
+    pg.display.update()
 
 
 
