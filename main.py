@@ -206,7 +206,7 @@ font = pg.font.Font(None, 24)
 
 screen = pg.display.set_mode((400,500))
 manager = pygame_gui.UIManager((400,500))
-pg.display.set_caption("Tic-Tac-Toe Game Window")
+pg.display.set_caption("Space Tac Toe Game")
 x_list = []
 y_list = []
     
