@@ -19,8 +19,8 @@ SCREEN_HEIGHT = 500
 trigger_counter = 0
 
 # set up usernames
-player1_username = ''
-player2_username = ''
+player1_username = 'John Doe'
+player2_username = 'Jane Smith'
 winner_username = ''
 loser_username = ''
 
@@ -324,20 +324,16 @@ def check_winner():
         if sum(x) == 3:
             winner = 1
             game_over = True
-
         if sum(x) == -3:
             winner = 2
             game_over = True
-
         # Check rows for 3 markers in a row
         if markers[0][y_pos] + markers[1][y_pos] + markers[2][y_pos] == 3:
             winner = 1
             game_over = True
-
         if markers[0][y_pos] + markers[1][y_pos] + markers[2][y_pos] == -3:
             winner = 2
             game_over = True
-        
         y_pos += 1
 
     # Check diagonals for 3 markers in a row
@@ -358,6 +354,7 @@ def display_winner(winner):
   global end_menu
   # Display which player won, otherwise display "tie game"
   if winner > 0:
+      # time.sleep(2)
       win_text = "Player " + str(winner) + " wins!"
       win_img = font.render(win_text, True, blue)
       pg.draw.rect(screen, green, (SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 - 110, 200, 50))
@@ -369,6 +366,7 @@ def display_winner(winner):
       screen.blit(win_img, (SCREEN_WIDTH // 2 - 70, SCREEN_HEIGHT // 2 - 100))
   
   if winner > 0:
+      
       winner_username = get_winner_username()
 
       if winner == 1:
@@ -385,7 +383,7 @@ def display_winner(winner):
       win_img = font.render(win_text, True, blue)
       
       # pygame_menu.events.RESET
-
+      
       # menu._open(end_menu)
       gameReset()
       end_menu = pygame_menu.Menu('GAME OVER', 400, 500,
@@ -408,10 +406,10 @@ def display_winner(winner):
       screen.blit(win_img, (SCREEN_WIDTH // 2 - 70, SCREEN_HEIGHT // 2 - 100))
 
   # Play again button
-  again = "Play Again?"
-  again_img = font.render(again, True, blue)
-  pg.draw.rect(screen, green, again_rect)
-  screen.blit(again_img, (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 + 10))
+  # again = "Play Again?"
+  # again_img = font.render(again, True, blue)
+  # pg.draw.rect(screen, green, again_rect)
+  # screen.blit(again_img, (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 + 10))
     
 
 # Displays # of wins for each player
@@ -429,10 +427,10 @@ def score_counter():
 
 
 
-  again = "Play Again?"
-  again_img = font.render(again, True, blue)
-  pg.draw.rect(screen, green, again_rect)
-  screen.blit(again_img, (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 + 10))
+  # again = "Play Again?"
+  # again_img = font.render(again, True, blue)
+  # pg.draw.rect(screen, green, again_rect)
+  # screen.blit(again_img, (SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 + 10))
 
 
 
@@ -481,11 +479,11 @@ menu.add.button('Quit', pygame_menu.events.EXIT)
 # Creating the "Avatar Selection" menu and its inputs
 avatars = pygame_menu.Menu('Select an Avatar', 400, 500,
                        theme=pygame_menu.themes.THEME_BLUE)
-avatars.add.text_input('Player 1: ', default='Name', onchange=set_name1)
+avatars.add.text_input('Player 1: ', default='John Doe', onchange=set_name1)
 avatars.add.selector('Colour: ', [('Red', 1), ('Orange', 2), ('Yellow', 3), ('Green', 4), ('Blue', 5), ('Purple', 6), ('Pink', 7)], onchange=set_colour1)
-avatars.add.text_input('Player 2: ', default='Jane Smith')
+avatars.add.text_input('Player 2: ', default='Jane Smith', onchange=set_name2)
 
-avatars.add.text_input('Player 2: ', default='Name')
+
 avatars.add.selector('Colour: ', [('Red', 1), ('Orange', 2), ('Yellow', 3), ('Green', 4), ('Blue', 5), ('Purple', 6), ('Pink', 7)], onchange=set_colour2)
 
 
